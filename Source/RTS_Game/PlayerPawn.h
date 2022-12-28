@@ -6,9 +6,10 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerPawn.generated.h"
 
-class USceneComponent;
-class USpringArmComponent;
-class UCameraComponent;
+// // Creating the classes used in the .h file
+//class USceneComponent;
+//class USpringArmComponent;
+//class UCameraComponent;
 
 UCLASS()
 class RTS_GAME_API APlayerPawn : public APawn
@@ -30,6 +31,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// // 
+	
 	// UPROPERTY()
 	// USceneComponent* RootScene;
 
@@ -39,8 +42,10 @@ public:
 	// UPROPERTY()
 	// UCameraComponent* CameraComp;
 
+private:
 	FVector MovementDirection;
 	FVector RotationDirection;
+
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void RotateCamera(float AxisValue); 

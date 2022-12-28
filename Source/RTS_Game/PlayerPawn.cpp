@@ -12,8 +12,8 @@ APlayerPawn::APlayerPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//Instantiating the camera here in the class didn't make the rotation work properly, the camera was the object that rotated not the spring arm.
-	//I had to create it in the blueprint and do the coding here.
+	//Creating the camera here in the class didn't make the rotation work properly, the bug was that the camera was the object that rotated not the spring arm.
+	//I had to create the camera and the spring arm in the blueprint in order for it work right.
 
 	#pragma region Camera Creation Code
 	// RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root Scene"));

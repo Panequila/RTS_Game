@@ -4,6 +4,7 @@
 #include "PlayerPawn.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
 
 
 // Sets default values
@@ -12,26 +13,29 @@ APlayerPawn::APlayerPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//Creating the camera here in the class didn't make the rotation work properly, the bug was that the camera was the object that rotated not the spring arm.
-	//I had to create the camera and the spring arm in the blueprint in order for it work right.
 
-	#pragma region Camera Creation Code
-	// RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root Scene"));
-	// RootComponent = RootScene;
+	//BluePrint_PlayerPawn is the default pawn which inherits this PlayerPawn class.
+	//Inorder to use the PlayerPawn as the default pawn, I need to use the "FloatingPawnMovement" in here as it is responosible for the movement.
+	
 
-	// SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	// SpringArmComp->SetupAttachment(RootScene);
-	// SpringArmComp->bDoCollisionTest = false;
-	// //Setting the starting rotation.
-	// //SpringArmComp->SetRelativeRotation(FRotator(-50,0,0));
+	#pragma region Camera & SpringArm Creation
 
-	// //SpringArmComp->bUsePawnControlRotation = true;
-	// SpringArmComp->bEnableCameraLag = true;
-	// SpringArmComp->TargetArmLength = 300.0f;
+	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("Root Scene"));
+	RootComponent = RootScene;
+
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
+	SpringArmComp->SetupAttachment(RootScene);
+	SpringArmComp->bDoCollisionTest = false;
+	//Setting the starting rotation.
+	SpringArmComp->SetRelativeRotation(FRotator(-50,0,0));
+
+	//SpringArmComp->bUsePawnControlRotation = true;
+	SpringArmComp->bEnableCameraLag = true;
+	SpringArmComp->TargetArmLength = 300.0f;
 
 
-	// CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	// CameraComp->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
+	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	CameraComp->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
 
 	#pragma endregion
 }
@@ -48,7 +52,7 @@ void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
+	Controller->GetControlRotation();
 	// FRotator newYaw = GetActorRotation();
 	// FRotator newPitch = SpringArmComp->GetComponentRotation();
 	// newYaw.Yaw += mouseInput.X;
@@ -65,6 +69,7 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &APlayerPawn::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &APlayerPawn::MoveRight);
 	PlayerInputComponent->BindAxis(TEXT("RotateCamera"), this, &APlayerPawn::RotateCamera);
+	PlayerInputComponent->BindAxis(TEXT("ZoomCamera"), this, &APlayerPawn::ZoomCamera);
 
 	// PlayerInputComponent->BindAxis(TEXT("MouseYaw"), this, &APlayerPawn::MouseYaw);
 	// PlayerInputComponent->BindAxis(TEXT("MousePitch"), this, &APlayerPawn::MousePitch);
@@ -90,6 +95,7 @@ void APlayerPawn::MoveRight(float AxisValue)
 
 void APlayerPawn::RotateCamera(float AxisValue)
 {
+
 	//AddActorLocalRotation(FRotator(0, AxisValue, 0));
 	//SetActorRotation(GetActorRotation(),FRotator(0,AxisValue,0));
 	//AddMovementInput(GetActorRotationVector(),AxisValue*500);
@@ -102,3 +108,8 @@ void APlayerPawn::RotateCamera(float AxisValue)
 	
 }
 
+void APlayerPawn::ZoomCamera(float AxisValue)
+{
+	//increasing or decreasing the arm length by the rotation speed
+	SpringArmComp->TargetArmLength += AxisValue * 100.f;
+}

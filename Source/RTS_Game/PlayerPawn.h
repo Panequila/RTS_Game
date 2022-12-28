@@ -49,6 +49,8 @@ private:
 	FVector MovementDirection;
 	FVector RotationDirection;
 
+
+	
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void RotateCamera(float AxisValue); 

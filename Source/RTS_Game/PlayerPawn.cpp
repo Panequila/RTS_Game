@@ -52,7 +52,7 @@ void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	Controller->GetControlRotation();
+	//Controller->GetControlRotation();
 	// FRotator newYaw = GetActorRotation();
 	// FRotator newPitch = SpringArmComp->GetComponentRotation();
 	// newYaw.Yaw += mouseInput.X;

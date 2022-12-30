@@ -35,6 +35,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AActor> ActorToSpawn;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxZoom;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MinZoom;
+
 private:
 	
 	UPROPERTY()
@@ -51,6 +56,9 @@ private:
 
 	UPROPERTY()
 	UCameraComponent* CameraComp;
+
+
+	
 
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);

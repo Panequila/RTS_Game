@@ -32,15 +32,15 @@ APlayerPawn::APlayerPawn()
 	SpringArmComp->SetupAttachment(RootScene);
 	SpringArmComp->bDoCollisionTest = false;
 	//Setting the starting rotation.
-	SpringArmComp->SetRelativeRotation(FRotator(-50, 0, 0));
+	SpringArmComp->SetRelativeRotation(FRotator(-100, 0, 0));
 
-	//SpringArmComp->bUsePawnControlRotation = true;
+	SpringArmComp->bUsePawnControlRotation = true;
 	SpringArmComp->bEnableCameraLag = true;
-	SpringArmComp->TargetArmLength = 300.0f;
+	SpringArmComp->TargetArmLength = 150.0f;
 
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	CameraComp->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
+	CameraComp->SetupAttachment(SpringArmComp);
 
 #pragma endregion
 }
@@ -138,7 +138,10 @@ void APlayerPawn::RotateCamera(float AxisValue)
 void APlayerPawn::ZoomCamera(float AxisValue)
 {
 	//increasing or decreasing the arm length by the rotation speed
-	SpringArmComp->TargetArmLength += AxisValue * 100.f;
+	SpringArmComp->TargetArmLength = FMath::Clamp(SpringArmComp->TargetArmLength += AxisValue * 100.f, MinZoom, MaxZoom);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Arm Length is: %f"), SpringArmComp->TargetArmLength));
+
+
 }
 
 //void APlayerPawn::OnMouseWheelClicked(float WheelDelta)

@@ -7,21 +7,21 @@
 #include "Blueprint/UserWidget.h"
 #include "MyPlayerController.h"
 
-FReply UBuildingPlacement::NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent)
+FReply UBuildingPlacement::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	Super::NativeOnMouseButtonDown(InGeometry,InMouseEvent);
+	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Mouse Button Down"));
 
 	AMyPlayerController* PlayerController = (AMyPlayerController*)GetWorld()->GetFirstPlayerController();
-	if(PlayerController!=nullptr){
+	if (PlayerController != nullptr) {
 		PlayerController->BuildingSelected = true;
 	}
 
 	return CustomDetectDrag(InMouseEvent, this, EKeys::LeftMouseButton);
-    //return FReply();
+	//return FReply();
 }
 
-void UBuildingPlacement::NativeOnDragDetected(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent, UDragDropOperation *&OutOperation)
+void UBuildingPlacement::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
 {
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Drag Detected"));
@@ -41,41 +41,44 @@ void UBuildingPlacement::NativeOnDragDetected(const FGeometry &InGeometry, const
 
 }
 
-void UBuildingPlacement::NativeOnDragCancelled(const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation)
+void UBuildingPlacement::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
-	Super::NativeOnDragCancelled(InDragDropEvent,InOperation);
+	Super::NativeOnDragCancelled(InDragDropEvent, InOperation);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Drag Cancelled"));
 
+	//Setting the buildingSelected bool to false to cancel selection
 	AMyPlayerController* PlayerController = (AMyPlayerController*)GetWorld()->GetFirstPlayerController();
-	if(PlayerController!=nullptr){
+	if (PlayerController != nullptr) {
 		PlayerController->BuildingSelected = false;
 	}
 }
 
-bool UBuildingPlacement::NativeOnDragOver(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation)
+bool UBuildingPlacement::NativeOnDragOver(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
-		Super::NativeOnDragDetected(InGeometry, InDragDropEvent, InOperation);
+	Super::NativeOnDragDetected(InGeometry, InDragDropEvent, InOperation);
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Drag Over"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Drag Over"));
 
+	//Setting the buildingSelected bool to true
 	AMyPlayerController* PlayerController = (AMyPlayerController*)GetWorld()->GetFirstPlayerController();
-	if(PlayerController!=nullptr){
+	if (PlayerController != nullptr) {
 		PlayerController->BuildingSelected = true;
 	}
-    return false;
+	return false;
 }
 
-FReply UBuildingPlacement::CustomDetectDrag(const FPointerEvent &InMouseEvent, UWidget *WidgetDetectingDrag, FKey DragKey)
+//Performing ceratin checking for when the Mouse Button is pressed and what happens when a widget drag is detected.
+FReply UBuildingPlacement::CustomDetectDrag(const FPointerEvent& InMouseEvent, UWidget* WidgetDetectingDrag, FKey DragKey)
 {
-    if ( InMouseEvent.GetEffectingButton() == DragKey /*|| PointerEvent.IsTouchEvent()*/ )
+	if (InMouseEvent.GetEffectingButton() == DragKey /*|| PointerEvent.IsTouchEvent()*/)
 	{
 		FEventReply Reply;
 		Reply.NativeReply = FReply::Handled();
-		
-		if ( WidgetDetectingDrag )
+
+		if (WidgetDetectingDrag)
 		{
 			TSharedPtr<SWidget> SlateWidgetDetectingDrag = WidgetDetectingDrag->GetCachedWidget();
-			if ( SlateWidgetDetectingDrag.IsValid() )
+			if (SlateWidgetDetectingDrag.IsValid())
 			{
 				Reply.NativeReply = Reply.NativeReply.DetectDrag(SlateWidgetDetectingDrag.ToSharedRef(), DragKey);
 				return Reply.NativeReply;

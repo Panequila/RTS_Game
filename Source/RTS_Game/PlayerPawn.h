@@ -32,8 +32,16 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AActor> ActorToSpawn;
+
+private:
+	
 	UPROPERTY()
 	FVector WorldPos;
+
+	UPROPERTY()
+	FVector2D MousePos;
 
 	UPROPERTY()
 	USceneComponent* RootScene;
@@ -44,25 +52,10 @@ public:
 	UPROPERTY()
 	UCameraComponent* CameraComp;
 
-	UPROPERTY()
-	UFloatingPawnMovement* FPM;
-
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<AActor> ActorToSpawn;
-
-private:
-	FVector MovementDirection;
-	FVector RotationDirection;
-
-
-	
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void RotateCamera(float AxisValue); 
 	void ZoomCamera(float AxisValue);
-
-	// void MouseYaw(float axis);
-	// void MousePitch(float axis);
-	// FVector2D mouseInput;
+	//void OnMouseWheelClicked(float WheelDelta);
 
 };

@@ -11,15 +11,11 @@ ASpawnCube::ASpawnCube()
     SphereMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SphereMesh"));
     SphereMesh->SetupAttachment(RootComponent);
 }
-
 // Called when the game starts or when spawned
 void ASpawnCube::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// const FVector Location = GetActorLocation();
-	// const FRotator Rotation = GetActorRotation();
-	// GetWorld()->SpawnActor<AActor>(ActorToSpawn, Location, Rotation);
 }
 
 

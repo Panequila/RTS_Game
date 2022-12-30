@@ -16,8 +16,6 @@ FReply UBuildingPlacement::NativeOnMouseButtonDown(const FGeometry &InGeometry, 
 	if(PlayerController!=nullptr){
 		PlayerController->BuildingSelected = true;
 	}
-	//BuildingSelected = !BuildingSelected;
-	//BuildingSelectionDelegate.Broadcast(BuildingSelected);
 
 	return CustomDetectDrag(InMouseEvent, this, EKeys::LeftMouseButton);
     //return FReply();
@@ -40,29 +38,6 @@ void UBuildingPlacement::NativeOnDragDetected(const FGeometry &InGeometry, const
 	DragDropOperation->Pivot = EDragPivot::MouseDown;
 
 	OutOperation = DragDropOperation;
-
-}
-
-
-// void UBuildingPlacement::NativeOnDragLeave(const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation)
-// {
-// 	Super::NativeOnDragLeave(InDragDropEvent, InOperation);
-// 	RemoveFromParent();
-
-// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Drag Left"));
-// }
-
-FReply UBuildingPlacement::NativeOnMouseButtonUp(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent)
-{
-    Super::NativeOnMouseButtonUp(InGeometry,InMouseEvent);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Mouse Button Up"));
-
-	//AMyPlayerController* PlayerController = (AMyPlayerController*)GetWorld()->GetFirstPlayerController();
-	// if(PlayerController!=nullptr){
-	// 	PlayerController->BuildingSelected = false;
-	// }
-
-	return CustomDetectDrag(InMouseEvent, this, EKeys::LeftMouseButton);
 
 }
 
@@ -114,11 +89,5 @@ void UBuildingPlacement::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	// Here is where I typically bind delegates,
-	// and set up default appearance
 }
 
-void UBuildingPlacement::DragBuilding()
-{
-    
-}

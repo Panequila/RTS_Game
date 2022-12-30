@@ -15,7 +15,7 @@ class RTS_GAME_API AMyPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 public:
-	bool BuildingSelected = true;
-	bool BuildingSelectionAllowed = true;
- 
+
+	//This isn't good practice, it is better to use events and let other classes subscribe to it.
+	bool BuildingSelected = false; 
 };

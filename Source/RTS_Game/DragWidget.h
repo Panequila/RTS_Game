@@ -16,7 +16,9 @@ class RTS_GAME_API UDragWidget : public UDragDropOperation
 	
 public:
 
-	//this will be used to hold the UMG Widget that we want to drag around on screen (building)
+	//This will be used to hold the UMG Widget that we want to drag around on screen (building)
+	//it inherits the DragDropOperation Class for this purpose.
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UUserWidget* WidgetReference;
 

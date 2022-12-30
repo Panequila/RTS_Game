@@ -5,8 +5,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
-
-
+#include "MyPlayerController.h"
+#include "GameFramework/PlayerController.h"
+#include "BuildingPlacement.h"
+#include "SpawnCube.h"
 // Sets default values
 APlayerPawn::APlayerPawn()
 {
@@ -44,7 +46,7 @@ APlayerPawn::APlayerPawn()
 void APlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -52,6 +54,44 @@ void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UWorld* TestWorld = GetWorld();
+	AMyPlayerController* PlayerController = (AMyPlayerController*)TestWorld->GetFirstPlayerController();
+	if(!PlayerController->BuildingSelected){
+	if (TestWorld)
+	{
+		FVector2D MousePos = FVector2D(0, 0);
+		WorldPos = FVector(MousePos.X, MousePos.Y, 0);
+		FVector Dir = FVector(0, 0, 0);
+		if (PlayerController != nullptr)
+		{
+			PlayerController->GetMousePosition(MousePos.X, MousePos.Y);
+			PlayerController->DeprojectMousePositionToWorld(WorldPos, Dir);
+		}
+		const FVector2D mousePosition = FVector2D((int)(WorldPos.X/1), (int)(WorldPos.Y/1));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Mouse Position to World is: %s"), *WorldPos.ToString()));
+
+
+		
+		//if(buildingPlacement->BuildingSelected)
+
+		FVector Start = WorldPos;
+		FVector End = WorldPos + (Dir * 10000000);
+		FHitResult Hit;
+		FCollisionQueryParams TraceParams;
+		GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, TraceParams);
+		DrawDebugLine(GetWorld(), Start, End, FColor::Orange, false, 2.0f);
+
+		
+			if(GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, TraceParams))
+			{
+
+				FActorSpawnParameters SpawnInfo;
+				GetWorld()->SpawnActor<ASpawnCube>(ActorToSpawn, Hit.Location, FRotator(0,0,0), SpawnInfo);
+				PlayerController->BuildingSelected = true;
+
+			}
+		}
+	}
 	//Controller->GetControlRotation();
 	// FRotator newYaw = GetActorRotation();
 	// FRotator newPitch = SpringArmComp->GetComponentRotation();
@@ -81,7 +121,7 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void APlayerPawn::MoveForward(float AxisValue)
 {
 	//getting the forward value of the pawn
-	UE_LOG(LogTemp, Warning, TEXT("The float value is: %f"), AxisValue);
+	//UE_LOG(LogTemp, Warning, TEXT("The float value is: %f"), AxisValue);
 	//MovementDirection.X = FMath::Clamp(AxisValue, -1.0f, 1.0f);
 	AddMovementInput(GetActorForwardVector() * AxisValue);
 }

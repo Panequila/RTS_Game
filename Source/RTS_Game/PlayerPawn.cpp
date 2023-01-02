@@ -48,7 +48,7 @@ void APlayerPawn::BeginPlay()
 
 	AngleAxis = 0.f;
 	// distance between the player and the point
-	Dimensions = FVector(0, 0, 0);
+	Dimensions = FVector(300, 0, 0);
 	// which access we want to rotate around
 	AxisVector = FVector(0, 0, 1);
 	Multiplier = 50.f;
@@ -164,7 +164,7 @@ void APlayerPawn::OnMouseWheelClicked(float WheelDelta)
 			DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f);
 
 			theHitLocation = Hit.Location;
-			theHitLocation.Z = SpringArmComp->TargetArmLength;
+			theHitLocation.Z = 500.f;
 			// Setting this bool to false so that we don't get keep getting new values for the Hit Location .. we only want the one where the mouse clicked
 			executeOnce = false;
 		}

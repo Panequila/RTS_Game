@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "UMG.h"
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "BuildingPlacement.generated.h"
@@ -13,6 +14,11 @@ class UBuildingPlacement : public UUserWidget
 
 public:
 
+	UPROPERTY()
+	class UImage* theImage;
+
+	UPROPERTY()
+	class UEditableText* theName;
 	//Tried to make an event.. needed more time to make it work so instead I added the variable to the PlayerController so that it becomes accessible for now.
 	// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBuildingSelected, bool);
 	// FOnBuildingSelected BuildingSelectionDelegate;

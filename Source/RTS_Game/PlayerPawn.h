@@ -58,12 +58,25 @@ private:
 	UCameraComponent* CameraComp;
 
 
+	float AngleAxis;
+	bool executeOnce = false;
+	FVector theHitLocation;
 	
+	UPROPERTY(EditAnywhere, Category = Movement)
+	FVector AxisVector;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	float Multiplier;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	FVector Dimensions;
+
+
 
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void RotateCamera(float AxisValue); 
 	void ZoomCamera(float AxisValue);
-	//void OnMouseWheelClicked(float WheelDelta);
+	void OnMouseWheelClicked(float WheelDelta);
 
 };

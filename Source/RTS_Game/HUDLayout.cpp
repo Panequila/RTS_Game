@@ -48,55 +48,60 @@ bool UHUDLayout::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent&
 //Tried to do "Close UI On Right Click"
 
 
-//FReply UHUDLayout::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-//{
-//	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-//
-//
-//	return CustomDetectMouseClick(InMouseEvent, EKeys::RightMouseButton);
-//	//return FReply();
-//}
-//
-//FReply UHUDLayout::CustomDetectMouseClick(const FPointerEvent& InMouseEvent, FKey DragKey)
-//{
-//	if (InMouseEvent.GetEffectingButton() == DragKey /*|| PointerEvent.IsTouchEvent()*/)
-//	{
-//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Right Click Outside Widget"));
-//
-//		// Get a pointer to the player controller
-//		AMyPlayerController* PC = (AMyPlayerController*)GetWorld()->GetFirstPlayerController();
-//
-//		// Get the mouse position
-//		FVector2D MousePosition;
-//		PC->GetMousePosition(MousePosition.X, MousePosition.Y);
-//
-//		// Get the hit result under the mouse cursor
-//		FHitResult HitResult;
-//		PC->GetHitResultAtScreenPosition(MousePosition, ECC_Visibility, false, HitResult);
-//
-//		if (HitResult.GetActor() == nullptr) {
-//			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Not Valid"));
-//		}
-//
-//		// Check if the hit result was a widget
-//		//if (HitResult.GetActor() != nullptr) {
-//
-//		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Valid"));
-//
-//		//	if (HitResult.GetActor()->IsA<UWidget>())
-//		//	{
-//		//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Right Click Inside Widget"));
-//		//		// The hit result was a widget
-//		//		// You can now cast the hit result to a widget and interact with it
-//		//		UWidget* Widget = Cast<UWidget>(HitResult.GetActor());
-//		//	}
-//		//}
-//		
-//
-//	}
-//	return FReply::Unhandled();
-//
-//}
+FReply UHUDLayout::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("On Mouse Button Down"));
+
+
+	return CustomDetectMouseClick(InMouseEvent, EKeys::RightMouseButton);
+	//return FReply();
+}
+
+FReply UHUDLayout::CustomDetectMouseClick(const FPointerEvent& InMouseEvent, FKey DragKey)
+{
+		
+	if (InMouseEvent.GetEffectingButton() == DragKey /*|| PointerEvent.IsTouchEvent()*/)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Right Click Outside Widget"));
+
+		// Get a pointer to the player controller
+		AMyPlayerController* PC = (AMyPlayerController*)GetWorld()->GetFirstPlayerController();
+		PC->SetInputMode(FInputModeUIOnly());
+
+		// Get the mouse position
+		FVector2D MousePosition;
+		PC->GetMousePosition(MousePosition.X, MousePosition.Y);
+
+		// Get the hit result under the mouse cursor
+		FHitResult HitResult;
+		PC->GetHitResultUnderCursorByChannel(TraceTypeQuery1, true, HitResult);
+
+
+
+		if (HitResult.GetActor() == nullptr) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Not Valid"));
+		}
+
+		 //Check if the hit result was a widget
+		if (HitResult.GetActor() != nullptr) {
+
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Valid"));
+
+			if (HitResult.GetActor()->IsA<UWidget>())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Right Click Inside Widget"));
+				// The hit result was a widget
+				// You can now cast the hit result to a widget and interact with it
+				UWidget* Widget = Cast<UWidget>(HitResult.GetActor());
+			}
+		}
+		
+
+	}
+	return FReply::Unhandled();
+
+}
 
 
 

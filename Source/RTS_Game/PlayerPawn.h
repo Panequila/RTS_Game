@@ -37,9 +37,9 @@ public:
 
 	//Editor Modifiers
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxZoom;
+	float MaxZoom = 3000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MinZoom;
+	float MinZoom = -3000.0f;
 
 private:
 	UPROPERTY()

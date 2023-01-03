@@ -9,35 +9,29 @@
 void UBuildingPlacement::NativeConstruct()
 {
 	Super::NativeConstruct();
-	theName = Cast<UEditableText>(GetWidgetFromName(TEXT("BuildingName")));
-	theImage = Cast<UImage>(GetWidgetFromName(TEXT("CubeImage")));
+
+	try
+	{
+		//Getting the Image of the Cube used in the UI
+		//Using Try/Catch because It sometimes gave a null reference
+		theImage = Cast<UImage>(GetWidgetFromName(TEXT("CubeImage")));
+	}
+	catch (const std::exception &e)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Mouse Button Down"), *e.what());
+	}
 }
 
 FReply UBuildingPlacement::NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent)
 {
-	// if (theName != nullptr)
-	// {
-	// 	theName = Cast<UEditableText>(GetWidgetFromName(TEXT("BuildingName")));
-	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Casting Done"));
-	// }
-	// if (theImage != nullptr)
-	// {
-	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Casting Done"));
-
-	// 	theImage = Cast<UImage>(GetWidgetFromName(TEXT("CubeImage")));
-	// }
-	// else
-	// {
-	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NULLLLLLLLL"));
-	// }
 	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Mouse Button Down"));
 	if (theImage != nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting Color"));
+		//Highlighting the color of the building to red upon mouse down
 		theImage->SetColorAndOpacity(FLinearColor(1.0f, 0.0f, 0.0f, 1.0f));
 	}
-
 	AMyPlayerController *PlayerController = (AMyPlayerController *)GetWorld()->GetFirstPlayerController();
 	if (PlayerController != nullptr)
 	{
@@ -48,12 +42,12 @@ FReply UBuildingPlacement::NativeOnMouseButtonDown(const FGeometry &InGeometry, 
 	// return FReply();
 }
 
+
+// Drag Operation
 void UBuildingPlacement::NativeOnDragDetected(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent, UDragDropOperation *&OutOperation)
 {
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Drag Detected"));
-
-	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 
 	UDragWidget *DragDropOperation = NewObject<class UDragWidget>();
 	this->SetVisibility(ESlateVisibility::HitTestInvisible);
@@ -67,19 +61,7 @@ void UBuildingPlacement::NativeOnDragDetected(const FGeometry &InGeometry, const
 	OutOperation = DragDropOperation;
 }
 
-void UBuildingPlacement::NativeOnDragCancelled(const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation)
-{
-	Super::NativeOnDragCancelled(InDragDropEvent, InOperation);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Drag Cancelled"));
-
-	// Setting the buildingSelected bool to false to cancel selection
-	AMyPlayerController *PlayerController = (AMyPlayerController *)GetWorld()->GetFirstPlayerController();
-	if (PlayerController != nullptr)
-	{
-		PlayerController->BuildingSelected = false;
-	}
-}
-
+// Drag Over
 bool UBuildingPlacement::NativeOnDragOver(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation)
 {
 	Super::NativeOnDragDetected(InGeometry, InDragDropEvent, InOperation);

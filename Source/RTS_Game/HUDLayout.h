@@ -6,22 +6,24 @@
 #include "Blueprint/UserWidget.h"
 #include "MyPlayerController.h"
 #include "HUDLayout.generated.h"
-/**
- * 
- */
+
+// DECLARE_DYNAMIC_DELEGATE(FOnBuildingDropped);
+
 UCLASS()
 class RTS_GAME_API UHUDLayout : public UUserWidget
 {
 	GENERATED_BODY()
 
-
 public:
+	// FOnBuildingDropped OnBuildingDropped;
 
-	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
-	FReply CustomDetectMouseClick(const FPointerEvent& InMouseEvent, FKey DragKey);
+	UPROPERTY()
+	class UWidget *CubeWidgetHolder;
 
 protected:
-	//Calling NativeOnDrop on another class because if we called it on BuildingPlacement we won't be able to get the value since it's a bool.
-	virtual bool NativeOnDrop( const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation ) override;
-
+	// Implementing the Drop function here because we can't do it in BuildingPlacement..
+	virtual bool NativeOnDrop(const FGeometry &InGeometry, const FDragDropEvent &InDragDropEvent, UDragDropOperation *InOperation) override;
+	virtual void NativeConstruct() override;
+	virtual FReply NativeOnMouseButtonDown(const FGeometry &InGeometry, const FPointerEvent &InMouseEvent) override;
+	FReply CustomDetectMouseClick(const FPointerEvent &InMouseEvent, FKey DragKey);
 };

@@ -25,23 +25,23 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AActor> ActorToSpawn;
 
+	//Editor Modifiers
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxZoom;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MinZoom;
 
 private:
-	
 	UPROPERTY()
 	FVector WorldPos;
 
@@ -49,19 +49,27 @@ private:
 	FVector2D MousePos;
 
 	UPROPERTY()
-	USceneComponent* RootScene;
+	USceneComponent *RootScene;
 
 	UPROPERTY()
-	USpringArmComponent* SpringArmComp;
+	USpringArmComponent *SpringArmComp;
 
 	UPROPERTY()
-	UCameraComponent* CameraComp;
+	FVector Start;
+	
+	UPROPERTY()
+	FVector End;
 
+	UPROPERTY()
+	FHitResult Hit;
+
+	UPROPERTY()
+	UCameraComponent *CameraComp;
 
 	float AngleAxis;
 	bool executeOnce = false;
 	FVector theHitLocation;
-	
+
 	UPROPERTY(EditAnywhere, Category = Movement)
 	FVector AxisVector;
 
@@ -71,12 +79,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = Movement)
 	FVector Dimensions;
 
-
-
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
-	void RotateCamera(float AxisValue); 
+	void RotateCamera(float AxisValue);
 	void ZoomCamera(float AxisValue);
 	void OnMouseWheelClicked(float WheelDelta);
-
+	void MouseToWorldPosition();
 };

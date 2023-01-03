@@ -59,30 +59,16 @@ void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// The World is the top level object representing the map in which Actors and Components will exist and be rendered.
-	UWorld *world = GetWorld();
-	// From the world we get the player controller
-	AMyPlayerController *PlayerController = (AMyPlayerController *)world->GetFirstPlayerController();
+	UWorld *theWorld = GetWorld();
+	AMyPlayerController *PlayerController = (AMyPlayerController *)theWorld->GetFirstPlayerController();
 
 	if (!PlayerController->BuildingSelected)
 	{
-		if (world)
+		// If there is a world/level created.
+		if (theWorld)
 		{
-			MousePos = FVector2D(0, 0);
-			WorldPos = FVector(MousePos.X, MousePos.Y, 0);
-			FVector Dir = FVector(0, 0, 0);
-			if (PlayerController != nullptr)
-			{
-				PlayerController->GetMousePosition(MousePos.X, MousePos.Y);
-				PlayerController->DeprojectMousePositionToWorld(WorldPos, Dir);
-			}
-			// const FVector2D mousePosition = FVector2D((int)(WorldPos.X/1), (int)(WorldPos.Y/1));
-			FVector Start = WorldPos;
-			FVector End = WorldPos + (Dir * 10000000);
-			FHitResult Hit;
+			MouseToWorldPosition();
 			FCollisionQueryParams TraceParams;
-			GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, TraceParams);
-			DrawDebugLine(GetWorld(), Start, End, FColor::Orange, false, 2.0f);
 
 			if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, TraceParams))
 			{
@@ -146,23 +132,7 @@ void APlayerPawn::OnMouseWheelClicked(float WheelDelta)
 	{
 		if (executeOnce == true)
 		{
-			UWorld *world = GetWorld();
-			AMyPlayerController *PlayerController = (AMyPlayerController *)world->GetFirstPlayerController();
-			MousePos = FVector2D(0, 0);
-			WorldPos = FVector(MousePos.X, MousePos.Y, 0);
-			FVector Dir = FVector(0, 0, 0);
-			if (PlayerController != nullptr)
-			{
-				PlayerController->GetMousePosition(MousePos.X, MousePos.Y);
-				PlayerController->DeprojectMousePositionToWorld(WorldPos, Dir);
-			}
-			FVector Start = WorldPos;
-			FVector End = WorldPos + (Dir * 10000000);
-			FHitResult Hit;
-			FCollisionQueryParams TraceParams;
-			GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, TraceParams);
-			DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.0f);
-
+			MouseToWorldPosition();
 			theHitLocation = Hit.Location;
 			theHitLocation.Z = 500.f;
 			// Setting this bool to false so that we don't get keep getting new values for the Hit Location .. we only want the one where the mouse clicked
@@ -170,24 +140,30 @@ void APlayerPawn::OnMouseWheelClicked(float WheelDelta)
 		}
 		AngleAxis += WheelDelta * 0.5f;
 
-		// if (AngleAxis >= 360.0f)
-		// {
-		// 	AngleAxis = 0;
-		// }
-
-		// //We use the commented code if we want the camera to move while doing the rotation 
-
-		// FVector RotateValue = Dimensions.RotateAngleAxis(AngleAxis, AxisVector);
-		//  theHitLocation.X += RotateValue.X;
-		//  theHitLocation.Y += RotateValue.Y;
-		//  theHitLocation.Z += RotateValue.Z;
-
-		// FRotator CurrentRotation = GetActorRotation();
-		// FRotator NewRotation = theRotation + FRotator(0.0f, RotationAmount, 0.0f);
-
 		FRotator NewRotation = FRotator(0, AngleAxis, 0);
 		FQuat QuatRotation = FQuat(NewRotation);
-		//
+
 		SetActorLocationAndRotation(theHitLocation, QuatRotation, false, 0, ETeleportType::None);
 	}
+}
+
+void APlayerPawn::MouseToWorldPosition()
+{
+	// The World is the top level object representing the map in which Actors and Components will exist and be rendered.
+	UWorld *TheWorld = GetWorld();
+	// From the world we get the player controller
+	AMyPlayerController *PlayerController = (AMyPlayerController *)TheWorld->GetFirstPlayerController();
+	MousePos = FVector2D(0, 0);
+	WorldPos = FVector(MousePos.X, MousePos.Y, 0);
+	FVector Dir = FVector(0, 0, 0);
+	if (PlayerController != nullptr)
+	{
+		PlayerController->GetMousePosition(MousePos.X, MousePos.Y);
+		PlayerController->DeprojectMousePositionToWorld(WorldPos, Dir);
+	}
+	Start = WorldPos;
+	End = WorldPos + (Dir * 10000000);
+	FCollisionQueryParams TraceParams;
+	GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, TraceParams);
+	DrawDebugLine(TheWorld, Start, End, FColor::Red, false, 2.0f);
 }
